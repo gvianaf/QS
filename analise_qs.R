@@ -99,26 +99,39 @@ qs_federal <- dados_clean %>%
   filter(!is.na(federal_rank)) %>% 
   select(ano, federal_rank, sigla)
 
+# usa fontes alternativas
+library(showtext)
+font_add("charter", "C:/Users/GUILHERME/AppData/Local/Microsoft/Windows/Fonts/Charter Regular.otf")
+font_add("charter-bold", "C:/Users/GUILHERME/AppData/Local/Microsoft/Windows/Fonts/Charter Bold.otf")
+font_add("fira", "C:/Users/GUILHERME/AppData/Local/Microsoft/Windows/Fonts/FiraSans-Regular.ttf")
+showtext_auto()
+
+theme_set(theme_classic(base_family = "charter"))
+theme_update(legend.position = "none",
+             axis.line.y = element_blank(),
+             axis.line.x = element_blank())
+
 graf <- qs_federal %>% 
   ggplot(aes(x = ano, y = federal_rank, color = sigla)) +
   geom_point(size = 4) +
   geom_bump(size = 2, smooth = 8) +
-  geom_text(data = qs_federal %>% filter(ano == min(ano)),
+  geom_text(data = qs_federal %>% filter(ano == min(ano)), family = "fira",
             aes(x = ano - .1, label = sigla), size = 5, hjust = 1) +
-  geom_text(data = qs_federal %>% filter(ano == max(ano)),
+  geom_text(data = qs_federal %>% filter(ano == max(ano)), family = "fira",
             aes(x = ano + .1, label = sigla), size = 5, hjust = 0) +
+  geom_text(data = qs_federal %>% filter(ano == max(ano)), family = "fira",
+            aes(x = ano + .8, label = glue::glue("{federal_rank}ª"), size = 5, hjust = 0)) +
   scale_y_reverse(breaks = c(seq(1, 18))) +
-  scale_x_continuous(limits = c(2016.4, 2021.6),
+  scale_x_continuous(limits = c(2016.5, 2021.8),
                      breaks = c(2017, 2018, 2019, 2020, 2021)) +
   scale_color_manual(values = cores) +
   labs(title = "Evolução das Universidades Federais no Ranking Mundial QS",
        subtitle = "A UnB destaca-se entre as melhores IES Federais, voltando à 5ª posição\nDiversas IFES que antes conseguiam se classificar, não mais conseguem",
        x = "Ano de divulgação do ranking",
        y = "") +
-  cowplot::theme_minimal_grid(font_size = 14, line_size = 0) +
-  theme(legend.position = "none",
-        panel.grid.major = element_blank(),
-        axis.title.x = element_text(hjust = 1),
+  # cowplot::theme_minimal_grid(font_size = 14, line_size = 0) +
+  theme(plot.title = element_text(family = "charter-bold"),
+        axis.title.x = element_text(hjust = .78),
         axis.text.y = element_text(size = 10))
 
 # inserir cinco arrows
@@ -134,12 +147,13 @@ arrow <- tribble(
 graf <- graf +
   annotate(geom = "curve", curvature = .2, arrow = arrow(length = unit(2, "mm")),
            x = arrow$x, xend = arrow$xend, y = arrow$y, yend = arrow$yend) +
-  annotate(geom = "text", vjust = 1,
+  annotate(geom = "text", vjust = 1, family = "fira",
            label = "Não estão mais\npresentes no QS World",
            x = 2020.6, y = 12.5)
 
 graf
-ggsave("qs-federais.png", dpi = 144, width = 8, height = 6)
+ggsave("qs-federais.pdf", width = 8, height = 6)
+pdftools::pdf_convert("qs-federais.pdf", format = "png", dpi = 350)
 
 # --- gráfico profissional - NACIONAL
 # paleta de cores
@@ -173,22 +187,23 @@ graf <- qs_br %>%
   ggplot(aes(x = ano, y = national_rank, color = sigla)) +
   geom_point(size = 4) +
   geom_bump(size = 2, smooth = 8) +
-  geom_text(data = qs_br %>% filter(ano == min(ano)),
+  geom_text(data = qs_br %>% filter(ano == min(ano)), family = "fira",
             aes(x = ano - .1, label = sigla), size = 5, hjust = 1) +
-  geom_text(data = qs_br %>% filter(ano == max(ano)),
+  geom_text(data = qs_br %>% filter(ano == max(ano)), family = "fira",
             aes(x = ano + .1, label = sigla), size = 5, hjust = 0) +
+  geom_text(data = qs_br %>% filter(ano == max(ano)), family = "fira",
+            aes(x = ano + .9, label = glue::glue("{national_rank}ª")), size = 5, hjust = 0) +
   scale_y_reverse(breaks = c(seq(1, 22))) +
-  scale_x_continuous(limits = c(2016.4, 2021.6),
+  scale_x_continuous(limits = c(2016.4, 2022),
                      breaks = c(2017, 2018, 2019, 2020, 2021)) +
   scale_color_manual(values = cores) +
   labs(title = "Evolução das Universidades Brasileiras no Ranking Mundial QS",
        subtitle = "Após dois anos seguidos de queda, UnB avança duas posições, voltando ao 10º lugar\nDiversas IFES que antes conseguiam se classificar, não mais conseguem",
        x = "Ano de divulgação do ranking",
        y = "") +
-  cowplot::theme_minimal_grid(font_size = 14, line_size = 0) +
-  theme(legend.position = "none",
-        panel.grid.major = element_blank(),
-        axis.title.x = element_text(hjust = 1),
+  # cowplot::theme_minimal_grid(font_size = 14, line_size = 0) +
+  theme(plot.title = element_text(family = "charter-bold"),
+        axis.title.x = element_text(hjust = .74),
         axis.text.y = element_text(size = 10))
 
 # inserir cinco arrows
@@ -212,7 +227,8 @@ graf <- graf +
            x = 2020.6, y = 20.5)
 
 graf
-ggsave("qs-br.png", dpi = 144, width = 8, height = 7)
-
+ggsave("qs-br.pdf", width = 8, height = 7)
+pdftools::pdf_convert("qs-br.pdf", format = "png", dpi = 350)
+showtext_auto(FALSE)
 
 
