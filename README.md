@@ -7,8 +7,9 @@ I say extracted because there's no 'download' button on the page, so I first ins
 For now, there's the script (analise_qs.R) that loads all the data, inspects and cleans all variables to create a clean dataset. From there, I create a visual narrative of its evolution between 2017 and 2021, using two scenarios: country-wise and compared to its Federal peers. 
 
 <br>
-![Evolução da UnB no QS](qs-br_1.png) 
+
+![Evolução da UnB no QS](qs-br_1.png)
 
 <br>
 
-![Evolução da UnB no QS - Federais](qs-federais_1.png) 
+![Evolução da UnB no QS - Federais](qs-federais_1.png)
